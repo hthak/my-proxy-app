@@ -1,0 +1,30 @@
+name: Build and Deploy to Azure WebApp
+
+on:
+  push:
+    branches:
+      - master  # or master, depending on what your default branch is called
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Deploy to Azure WebApp
+      uses: azure/webapps-deploy@v2
+      with: 
+        app-name: 'webappforproxy'  # The name of your Azure WebApp
+        slot-name: 'production'  # The slot to deploy to
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}  # The Azure WebApp Publish Profile secret
+        package: '.'  # The path to your app's root directory

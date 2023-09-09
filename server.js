@@ -2,21 +2,17 @@ const express = require('express');
 const axios = require('axios');
 
 const app = express();
-const PORT = process.env.PORT || 3000;  // Use the environment port if available, otherwise use 3000.
+const port = process.env.PORT || 3000;
 
-app.use(express.json());
-
-// Define a simple proxy route
-app.post('/proxy', async (req, res) => {
+app.get('/fetchData', async (req, res) => {
     try {
-        const targetURL = req.body.targetURL;
-        const response = await axios.get(targetURL);
-        res.json(response.data);
+        const externalData = await axios.get('https://askopenaiapiv2.azurewebsites.net/api/askopenaifunction?url=youtube.com');
+        res.json(externalData.data);
     } catch (error) {
-        res.status(500).send('Failed to fetch data');
+        res.status(500).send(error.toString());
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+app.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}`);
 });
